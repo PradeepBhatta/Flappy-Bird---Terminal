@@ -18,6 +18,7 @@ gcc flappy_bird.c -o flappy_bird.exe
 flappy_bird.exe
 ```
 
+
 ---
 
 ## How to Play
@@ -35,72 +36,93 @@ flappy_bird.exe
 
 | Variable | What it is | What it's used for |
 |---|---|---|
-| `bird_row` | A number (0 to 14) | Tracks where the bird is up and down on the screen |
-| `wall_column` | A number (0 to 49) | Tracks how far left the wall has moved |
-| `opening_start_row` | A number | Tells us where the gap in the wall starts |
-| `player_score` | A number starting at 0 | Goes up by 1 every time you pass a wall |
-| `is_game_over` | 0 or 1 | 0 means game is running, 1 means game has ended |
-| `saved_terminal_settings` | Terminal config | Saves the original terminal so we can restore it after the game (Linux/Mac only) |
-| `BOARD_WIDTH` | Set to 50 | How wide the game board is |
-| `BOARD_HEIGHT` | Set to 15 | How tall the game board is |
-| `WALL_OPENING_SIZE` | Set to 4 | How big the gap in the wall is |
+| `bird_y` | A number (0 to HEIGHT) | Tracks where the bird is vertically (up and down) |
+| `obstacle_x` | A number (0 to WIDTH) | Tracks how far left the obstacle has moved |
+| `gap_start` | A number | Tells us where the gap in the obstacle starts |
+| `score` | A number starting at 0 | Increases by 1 every time you pass an obstacle |
+| `game_over` | 0 or 1 | 0 = game running, 1 = game ended |
+| `old_settings` | Terminal config | Saves original terminal settings (Linux/Mac only) |
+| `WIDTH` | Set to 50 | How wide the game screen is |
+| `HEIGHT` | Set to 15 | How tall the game screen is |
+| `GAP_SIZE` | Set to 4 | How big the gap in the obstacle is |
 
 ---
 
 ## Functions — What Each One Does
 
-### `fix_terminal_for_game()`
+### `enable_instant_input()`
 > *Linux/Mac only*
 
-Normally the terminal waits for you to press Enter before reading any key. That's annoying in a game. This function turns that off so the game can read your key press instantly without waiting.
+Normally, the terminal waits for you to press Enter before reading input. This function disables that so key presses are detected instantly during the game.
 
 ---
 
-### `restore_terminal_to_normal()`
+### `restore_input()`
 > *Linux/Mac only*
 
-After the game is done, this puts the terminal back to how it was before. Without this, your terminal would act weird after the game closes.
+Restores the terminal back to normal after the game ends. Without this, your terminal might behave strangely.
 
 ---
 
-### `was_key_pressed()`
+### `key_pressed()`
 > *Linux/Mac only*
 
-Just checks if a key was pressed — doesn't actually read it yet. Returns 1 if yes, 0 if no. This way the game keeps moving even if you don't press anything.
+Checks if a key was pressed without stopping the program. Returns 1 if a key is pressed, otherwise 0.
 
 ---
 
-### `reset_game()`
+### `start_new_game()`
 
-Resets everything back to the start. Bird goes to the middle, wall goes to the right side, score goes to 0. Called at the beginning and when you choose to play again.
-
----
-
-### `draw_game_frame()`
-
-Draws everything you see on screen. Clears the screen first, then draws the borders, the bird, the wall, the gap, and the score. This runs every single frame so the screen looks updated.
+Resets everything to the starting state. The bird goes to the middle, obstacle resets to the right side, and score becomes 0.
 
 ---
 
-### `run_game()`
+### `draw_screen()`
 
-This is the main loop that keeps the game going. Every loop it does these things in order:
+Draws everything on the screen:
+- Clears the terminal
+- Draws borders
+- Draws the bird `@`
+- Draws the obstacle `#` with a gap
+- Displays the score
+
+Runs every frame to update the display.
+
+---
+
+### `play_game()`
+
+This is the main game loop. It keeps running until the game ends.
+
+Each loop:
 1. Draw the screen
-2. Check if you pressed a key
-3. Move the bird down (gravity)
-4. Move the wall to the left
-5. If wall goes off screen, make a new one with a random gap
-6. Check if the bird crashed
-7. Wait 150ms and repeat
+2. Check for key press
+3. Apply gravity (bird goes down)
+4. Move obstacle left
+5. Reset obstacle when it goes off screen
+6. Check collisions
+7. Wait ~150ms
 
 ---
 
 ### `main()`
 
-Where the program starts. Shows the welcome screen, runs the game, shows Game Over with your score, then asks if you want to play again.
+The starting point of the program.
+
+- Shows welcome screen
+- Starts the game
+- Displays Game Over and score
+- Asks if you want to play again
 
 ---
 
 ## Quick Summary of How It Works
 
-The game redraws the screen around 6 times per second. Each time, the bird falls a little and the wall moves a little to the left. If you press a key, the bird jumps up. If the bird touches the wall or goes off the screen, you lose. That's basically it!
+The game refreshes the screen multiple times per second. Each time:
+- The bird slowly falls down
+- The obstacle moves left
+- You press a key to jump
+
+If the bird hits the obstacle or goes off screen → game over.
+
+That's it — simple and fun!
