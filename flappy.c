@@ -37,7 +37,7 @@ int score;
 int game_over;
 
 
-// ----------- LINUX INPUT FIX (BEGINNER COMMENTED) -----------
+// ----------- FOR LINUX -----------
 #ifndef _WIN32
 
 // store old terminal settings

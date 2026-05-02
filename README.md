@@ -116,7 +116,7 @@ The starting point of the program.
 
 ---
 
-## Quick Summary of How It Works
+## Summary of How It Works
 
 The game refreshes the screen multiple times per second. Each time:
 - The bird slowly falls down
